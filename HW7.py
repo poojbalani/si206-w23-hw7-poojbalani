@@ -91,6 +91,7 @@ def nationality_search(countries, cur, conn):
     for country in countries:
         cur.execute("SELECT name, position_id,nationality FROM Players WHERE nationality = ?",(country,))
         match = cur.fetchall()
+    conn.commit()
     return match
 
 ## [TASK 3]: 10 points
@@ -110,7 +111,11 @@ def nationality_search(countries, cur, conn):
 
 
 def birthyear_nationality_search(age, country, cur, conn):
-    pass
+    bornBefore = 2023 - age
+    cur.execute("SELECT name, nationality, birthyear FROM Players WHERE nationality = ? AND birthyear < ?",(country,bornBefore))
+    match = cur.fetchall()
+    conn.commit()
+    return match
 
 ## [TASK 4]: 15 points
 # finish the function position_birth_search
@@ -256,6 +261,7 @@ def main():
     make_positions_table(json_data, cur, conn)
     make_players_table(json_data, cur, conn)
     nationality_search(['England'], cur, conn)
+    birthyear_nationality_search(24, 'England', cur, conn)
     conn.close()
 
 
