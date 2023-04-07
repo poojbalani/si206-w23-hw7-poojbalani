@@ -181,10 +181,7 @@ def make_winners_table(data, cur, conn):
     for player in data["seasons"]:
         if player['winner'] != None:
             name = player['winner']['name']
-            # print(name)
-            # print(player)
             id = player['id']
-            # print(id)
             ids.append(id)
             names.append(name)
     cur.execute("CREATE TABLE IF NOT EXISTS Winners (id INTEGER PRIMARY KEY, name TEXT)")
@@ -192,15 +189,22 @@ def make_winners_table(data, cur, conn):
         cur.execute("INSERT OR IGNORE INTO Winners (id, name) VALUES (?,?)",(ids[i],names[i]))
     conn.commit()
 
-    #     if position not in positions:
-    #         positions.append(position)
-    # cur.execute("CREATE TABLE IF NOT EXISTS Winners (id INTEGER PRIMARY KEY, position TEXT UNIQUE)")
-    # for i in range(len(positions)):
-    #     cur.execute("INSERT OR IGNORE INTO Positions (id, position) VALUES (?,?)",(i, positions[i]))
-    # conn.commit()
-
 def make_seasons_table(data, cur, conn):
-    pass
+    ids = []
+    winner_ids = []
+    endYears = []
+    for player in data["seasons"]:
+        if player['winner'] != None:
+            id = player['id']
+            ids.append(id)
+            winner_id = player['winner']['id']
+            winner_ids.append(winner_id)
+            endYear = player['endDate'][0:4]
+            endYears.append(endYear)
+    cur.execute("CREATE TABLE IF NOT EXISTS Seasons (id INTEGER PRIMARY KEY, winner_id TEXT, end_year TEXT)")
+    for i in range(len(ids)):
+        cur.execute("INSERT OR IGNORE INTO Seasons (id, winner_id, end_year) VALUES (?,?,?)",(ids[i],winner_ids[i], endYears[i]))
+    conn.commit()
 
 def winners_since_search(year, cur, conn):
     pass
@@ -268,8 +272,11 @@ class TestAllMethods(unittest.TestCase):
     def test_make_seasons_table(self):
         self.cur2.execute('SELECT * from Seasons')
         seasons_list = self.cur2.fetchall()
-
-        pass
+        self.assertEqual(len(seasons_list), 28)
+        self.assertEqual(seasons_list[0][0], 23)
+        self.assertEqual(seasons_list[0][1], '65')
+        self.assertEqual(seasons_list[0][2], '2018')
+        
 
     def test_winners_since_search(self):
 
