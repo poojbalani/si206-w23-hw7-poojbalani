@@ -135,7 +135,10 @@ def birthyear_nationality_search(age, country, cur, conn):
     # HINT: You'll have to use JOIN for this task.
 
 def position_birth_search(position, age, cur, conn):
-       pass
+    bornAfter = 2023 - age
+    cur.execute("SELECT Players.name AS Player, Positions.position AS Position, Players.birthyear AS Birthyear FROM Players JOIN Positions ON Position = ? AND Positions.id = Players.position_id AND Birthyear > ?",(position,bornAfter))
+    results = cur.fetchall()
+    return results
 
 
 # [EXTRA CREDIT]
@@ -262,6 +265,7 @@ def main():
     make_players_table(json_data, cur, conn)
     nationality_search(['England'], cur, conn)
     birthyear_nationality_search(24, 'England', cur, conn)
+    position_birth_search('Goalkeeper', 35, cur, conn)
     conn.close()
 
 
