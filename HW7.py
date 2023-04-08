@@ -207,7 +207,9 @@ def make_seasons_table(data, cur, conn):
     conn.commit()
 
 def winners_since_search(year, cur, conn):
-    pass
+    returnDict = {}
+    print(year)
+    
 
 
 class TestAllMethods(unittest.TestCase):
